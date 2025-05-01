@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import flash from '../assets/flash.svg';
@@ -40,31 +40,23 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
   const [texture, setTexture] = useState(null);
   const meshRef = useRef();
   const [isHovered, setIsHovered] = useState(false);
-  const initialRotation = useRef([0, (Math.random() - 0.5) * 0.2, 0]); // Minimal Y-axis rotation
+  const initialRotation = useRef([0, (Math.random() - 0.5) * 0.2, 0]);
 
   useFrame((state) => {
     if (!meshRef.current) return;
     const time = state.clock.getElapsedTime();
 
-    // Idle animations
     if (!isHovered) {
-      // Scale pulse
       const scale = 1 + Math.sin(time * scaleSpeed) * 0.05;
       meshRef.current.scale.set(scale, scale, scale);
-
-      // Controlled wobble (Y-axis only)
       meshRef.current.rotation.y = initialRotation.current[1] + Math.sin(time * rotationSpeed.y) * 0.05;
-
-      // Position reset
       meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, zOffset, 0.1);
     } else {
-      // Hover effects
       meshRef.current.scale.lerp(new THREE.Vector3(1.15, 1.15, 1.15), 0.1);
       meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, 0, 0.1);
       meshRef.current.position.z = THREE.MathUtils.lerp(meshRef.current.position.z, zOffset + 0.3, 0.1);
     }
 
-    // Material effects
     meshRef.current.material.emissiveIntensity = THREE.MathUtils.lerp(
       meshRef.current.material.emissiveIntensity,
       isHovered ? 0.4 : 0,
@@ -78,16 +70,13 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
     canvas.height = 768;
     const ctx = canvas.getContext('2d');
 
-    // Draw border
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 10;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-    // Draw background
-    ctx.fillStyle = '#F5F5F5'; // Slightly off-white for contrast
+    ctx.fillStyle = '#F5F5F5';
     ctx.fillRect(5, 5, canvas.width - 10, canvas.height - 10);
 
-    // Draw title
     ctx.textAlign = 'center';
     ctx.fillStyle = 'black';
     ctx.font = '900 36px Impact, Oswald, sans-serif';
@@ -113,7 +102,6 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
       ctx.fillText(line, canvas.width / 2, 70 + (i * lineHeight));
     });
 
-    // Draw image
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = () => {
@@ -121,7 +109,6 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
       const x = (canvas.width - imgSize) / 2;
       const y = (canvas.height - imgSize) / 2;
 
-      // White background with black border for image
       const padding = 10;
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(x - padding, y - padding, imgSize + 2 * padding, imgSize + 2 * padding);
@@ -167,17 +154,18 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
 }
 
 function CardsRow({ cardsData, onCardClick }) {
+  const { width } = useThree((state) => state.size);
+  const spacing = width < 640 ? 1 : 2;
+  const startX = -((cardsData.length - 1) * spacing) / 2;
   const baseUrl = import.meta.env.BASE_URL || '/';
   const fontUrl = `${baseUrl}fonts/Impact.ttf`;
-  const spacing = 2;
-  const startX = -((cardsData.length - 1) * spacing) / 2;
 
   return (
     <group>
       {cardsData.map((data, i) => {
-        const rotationSpeed = { x: 0, y: 0.3, z: 0 }; // Wobble on Y-axis only
-        const scaleSpeed = 0.5; // Consistent scale speed
-        const zOffset = 0; // Flat z-plane for simplicity
+        const rotationSpeed = { x: 0, y: 0.3, z: 0 };
+        const scaleSpeed = 0.5;
+        const zOffset = 0;
 
         return (
           <Card

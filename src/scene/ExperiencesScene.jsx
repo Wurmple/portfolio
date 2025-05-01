@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -9,7 +9,7 @@ const experiences = [
     role: 'Data Analyst Intern',
     period: 'July 2023 – Dec 2023',
     location: 'Mumbai, Maharashtra',
-    color: new THREE.Color('#EF5350'), // Vibrant Red
+    color: new THREE.Color('#EF5350'),
     highlights: [
       'Analyzed sales/HR data with Python',
       'Developed automated reporting system',
@@ -22,7 +22,7 @@ const experiences = [
     role: 'Fullstack Engineer',
     period: 'July 2024 – Present',
     location: 'Panaji, Goa',
-    color: new THREE.Color('#66BB6A'), // Rich Green
+    color: new THREE.Color('#66BB6A'),
     highlights: [
       'Developed data enrichment microservice',
       'Built Voice Agent with React/GenAI',
@@ -45,40 +45,34 @@ function ExperienceCube({ position, exp, index, onClick }) {
     canvas.height = 1024;
     const ctx = canvas.getContext('2d');
 
-    // Background
     ctx.fillStyle = frontColor.getStyle();
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Add neobrutalism border
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 20;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-    // Draw text immediately
     drawText();
 
-    // Load and draw image
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = () => {
       const centerX = canvas.width / 2;
-      const centerY = 300; // Adjusted to ensure white background is fully visible
+      const centerY = 300;
       const maxSize = 500;
       const imgRatio = img.width / img.height;
       let drawWidth = imgRatio > 1 ? maxSize : maxSize * imgRatio;
       let drawHeight = imgRatio > 1 ? maxSize / imgRatio : maxSize;
       const x = centerX - drawWidth / 2;
       const y = centerY - drawHeight / 2;
-    
-      // Add white background with black border for logo
+
       const padding = 20;
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(x - padding, y - padding, drawWidth + 2 * padding, drawHeight + 2 * padding);
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 10;
       ctx.strokeRect(x - padding, y - padding, drawWidth + 2 * padding, drawHeight + 2 * padding);
-    
-      // Draw image
+
       ctx.drawImage(img, x, y, drawWidth, drawHeight);
       updateTexture();
     };
@@ -158,21 +152,21 @@ function ExperienceCube({ position, exp, index, onClick }) {
       isHovered ? initialY.current + 0.3 : initialY.current,
       0.1
     );
-    meshRef.current.rotation.x = 0; // No tilt
-    meshRef.current.rotation.y = 0; // Face camera directly
+    meshRef.current.rotation.x = 0;
+    meshRef.current.rotation.y = 0;
 
-    const frontMaterial = meshRef.current.material[4]; // Front face
+    const frontMaterial = meshRef.current.material[4];
     frontMaterial.emissive = new THREE.Color(isHovered ? '#ffffff' : '#000000');
-    frontMaterial.emissiveIntensity = isHovered ? 0.1 : 0; // Subtle glow
+    frontMaterial.emissiveIntensity = isHovered ? 0.1 : 0;
   });
 
   const materials = useMemo(() => [
-    new THREE.MeshStandardMaterial({ color: exp.color }), // Right face
-    new THREE.MeshStandardMaterial({ color: exp.color }), // Left face
-    new THREE.MeshStandardMaterial({ color: exp.color }), // Top face
-    new THREE.MeshStandardMaterial({ color: exp.color }), // Bottom face
-    new THREE.MeshStandardMaterial({ color: frontColor, map: texture, emissive: '#000000', emissiveIntensity: 0 }), // Front face
-    new THREE.MeshStandardMaterial({ color: exp.color }), // Back face
+    new THREE.MeshStandardMaterial({ color: exp.color }),
+    new THREE.MeshStandardMaterial({ color: exp.color }),
+    new THREE.MeshStandardMaterial({ color: exp.color }),
+    new THREE.MeshStandardMaterial({ color: exp.color }),
+    new THREE.MeshStandardMaterial({ color: frontColor, map: texture, emissive: '#000000', emissiveIntensity: 0 }),
+    new THREE.MeshStandardMaterial({ color: exp.color }),
   ], [exp.color, frontColor, texture]);
 
   return (
@@ -192,10 +186,11 @@ function ExperienceCube({ position, exp, index, onClick }) {
 }
 
 function ExperienceScene({ onSelect }) {
+  const { width } = useThree((state) => state.size);
+  const spacing = width < 640 ? 3 : 7;
+  const startX = -((experiences.length - 1) * spacing) / 2;
   const baseUrl = import.meta.env.BASE_URL || '/';
   const fontUrl = `${baseUrl}fonts/Impact.ttf`;
-  const spacing = 7;
-  const startX = -((experiences.length - 1) * spacing) / 2;
 
   return (
     <group position={[0, 0, 0]}>
@@ -242,7 +237,7 @@ function ExperienceScene({ onSelect }) {
   );
 }
 
-export default function ExperiencesScene({ id, className}) {
+export default function ExperiencesScene({ id, className }) {
   const [selectedExp, setSelectedExp] = useState(null);
 
   return (

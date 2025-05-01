@@ -43,7 +43,7 @@ function LaptopModel() {
   );
 }
 
-export default function LaptopScene({className}) {
+export default function LaptopScene({ className }) {
   return (
     <div className={`h-5/6 w-full ${className}`}>
       <Canvas camera={{ position: [0, 4, 15], fov: 45 }} gl={{ antialias: true }}>
@@ -52,7 +52,6 @@ export default function LaptopScene({className}) {
         <Suspense fallback={null}>
           <LaptopModel />
         </Suspense>
-        {/* <OrbitControls /> */}
       </Canvas>
     </div>
   );
