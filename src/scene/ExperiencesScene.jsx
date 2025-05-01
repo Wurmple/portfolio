@@ -62,14 +62,14 @@ function ExperienceCube({ position, exp, index, onClick }) {
     img.crossOrigin = "Anonymous";
     img.onload = () => {
       const centerX = canvas.width / 2;
-      const centerY = 250;
+      const centerY = 300; // Adjusted to ensure white background is fully visible
       const maxSize = 500;
       const imgRatio = img.width / img.height;
       let drawWidth = imgRatio > 1 ? maxSize : maxSize * imgRatio;
       let drawHeight = imgRatio > 1 ? maxSize / imgRatio : maxSize;
       const x = centerX - drawWidth / 2;
       const y = centerY - drawHeight / 2;
-
+    
       // Add white background with black border for logo
       const padding = 20;
       ctx.fillStyle = '#FFFFFF';
@@ -77,7 +77,7 @@ function ExperienceCube({ position, exp, index, onClick }) {
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 10;
       ctx.strokeRect(x - padding, y - padding, drawWidth + 2 * padding, drawHeight + 2 * padding);
-
+    
       // Draw image
       ctx.drawImage(img, x, y, drawWidth, drawHeight);
       updateTexture();
@@ -102,7 +102,7 @@ function ExperienceCube({ position, exp, index, onClick }) {
       wrapText(ctx, exp.role, 900, currentY, 80, true);
       currentY += 80 * 1.2 + 25;
 
-      ctx.fillStyle = '#000000'; // Changed to pure black for better contrast
+      ctx.fillStyle = '#000000';
       ctx.font = 'bold 60px Oswald, sans-serif';
       wrapText(ctx, exp.period, 900, currentY, 60);
       currentY += 60 * 1.2 + 20;
@@ -192,6 +192,8 @@ function ExperienceCube({ position, exp, index, onClick }) {
 }
 
 function ExperienceScene({ onSelect }) {
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const fontUrl = `${baseUrl}fonts/Impact.ttf`;
   const spacing = 7;
   const startX = -((experiences.length - 1) * spacing) / 2;
 
@@ -208,6 +210,7 @@ function ExperienceScene({ onSelect }) {
       ))}
       <Text
         position={[0, 4, 0]}
+        font={fontUrl}
         fontSize={1}
         color="#000000"
         anchorX="center"
@@ -217,6 +220,7 @@ function ExperienceScene({ onSelect }) {
       </Text>
       <Text
         position={[startX - 3, 0, 0]}
+        font={fontUrl}
         fontSize={0.5}
         color="#000000"
         anchorX="right"
@@ -226,6 +230,7 @@ function ExperienceScene({ onSelect }) {
       </Text>
       <Text
         position={[startX + (experiences.length - 1) * spacing + 3, 0, 0]}
+        font={fontUrl}
         fontSize={0.5}
         color="#000000"
         anchorX="left"
@@ -247,8 +252,8 @@ export default function ExperiencesScene({ id, className}) {
         className="h-screen w-screen"
         gl={{ antialias: true, powerPreference: "high-performance" }}
       >
-        <ambientLight intensity={2} />
-        <directionalLight position={[5, 5, 5]} intensity={1.5} />
+        <ambientLight intensity={1} />
+        <directionalLight position={[5, 5, 5]} intensity={4} />
         <ExperienceScene onSelect={setSelectedExp} />
       </Canvas>
       {selectedExp && (

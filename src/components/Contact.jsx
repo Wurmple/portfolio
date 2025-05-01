@@ -38,7 +38,7 @@ const Contact = ({ id, className }) => {
         </a>
       </div>
       <a 
-        href="/Shyam-Resume.pdf" 
+        href="/portfolio/Shyam-Resume.pdf" 
         download="Shyam_Poduval_Resume.pdf"
         className='group self-start bg-green-500 border-black border-t-2 border-l-2 border-r-8 border-b-8 rounded-lg flex flex-row gap-4 px-3 py-6 cursor-pointer hover:bg-green-600 hover:scale-110 transition duration-200'
       >

@@ -18,7 +18,7 @@ const Skills = ({id, className}) => {
               <img
                 src={image}
                 alt={image.split('.')[0] || "technologia"}
-                className="max-w-full h-24 object-contain border-4 border-black p-2 shadow-lg transform hover:scale-105 transition-transform"
+                className="max-w-full h-36 object-contain border-4 border-black p-4 shadow-lg transform hover:scale-105 transition-transform"
               />
             </div>
           ))}
@@ -53,7 +53,7 @@ const Skills = ({id, className}) => {
               <img
                 src={image}
                 alt={image.split('.')[0] || "technologia"}
-                className="max-w-full h-24 object-contain border-4 border-black p-2 shadow-lg transform hover:scale-105 transition-transform"
+                className="max-w-full h-36 object-contain border-4 border-black p-4 shadow-lg transform hover:scale-105 transition-transform"
               />
             </div>
           ))}
@@ -68,7 +68,7 @@ const Skills = ({id, className}) => {
               <img
                 src={image}
                 alt={image.split('.')[0] || "technologia"}
-                className="max-w-full h-24 object-contain border-4 border-black p-2 shadow-lg transform hover:scale-105 transition-transform"
+                className="max-w-full h-36 object-contain border-4 border-black p-4 shadow-lg transform hover:scale-105 transition-transform"
               />
             </div>
           ))}

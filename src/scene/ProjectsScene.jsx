@@ -80,7 +80,7 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
 
     // Draw border
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 10; // Thicker for neobrutalism
+    ctx.lineWidth = 10;
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
     // Draw background
@@ -167,6 +167,8 @@ function Card({ position, title, imageUrl, period, highlights, rotationSpeed, sc
 }
 
 function CardsRow({ cardsData, onCardClick }) {
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  const fontUrl = `${baseUrl}fonts/Impact.ttf`;
   const spacing = 2;
   const startX = -((cardsData.length - 1) * spacing) / 2;
 
@@ -194,6 +196,7 @@ function CardsRow({ cardsData, onCardClick }) {
       })}
       <Text
         position={[0, 1.5, 0]}
+        font={fontUrl}
         fontSize={0.5}
         color="#000000"
         anchorX="center"
@@ -211,10 +214,9 @@ const ProjectsScene = ({ id, className }) => {
   return (
     <div id={id} className={`relative h-[91vh] w-screen border-b-4 border-black bg-lime-200 ${className}`}>
       <Canvas camera={{ position: [0, 0, 3], fov: 75 }} className="h-screen w-screen" gl={{ antialias: true }}>
-        <ambientLight intensity={1} />
-        <directionalLight position={[5, 5, 5]} intensity={1.5} />
+        <ambientLight intensity={2} />
+        <directionalLight position={[5, 5, 5]} intensity={1} />
         <CardsRow cardsData={projects} onCardClick={setSelectedProject} />
-        {/* <OrbitControls enableRotate={false} enableZoom={true} enablePan={true} minDistance={2} maxDistance={5} /> */}
       </Canvas>
       {selectedProject && (
         <div
