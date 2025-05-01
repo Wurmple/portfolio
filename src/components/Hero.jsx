@@ -67,23 +67,23 @@ const Hero = ({ id, className }) => {
         <div className="relative border-t-4 border-r-4 border-l-8 border-b-8 border-black px-4 py-8 max-w-full max-h-full flex flex-col gap-4 bg-teal-200 rounded-lg">
           <img
             src="shyam.jpg"
-            className="border-2 border-black object-contain w-full max-h-96 hover:shadow-lg hover:scale-140 transition duration-300"
+            className="border-2 border-black object-contain w-full max-h-96 hover:shadow-lg hover:scale-105 transition duration-300"
             alt="Shyam Poduval"
           />
           <p className="font-jetbrains shadow-lg bg-pink-300 self-end px-1 py-2 hover:scale-110 transition duration-300">Shyam Poduval</p>
           <img
             src="curved-arrow.svg"
-            className="absolute bottom-[-10rem] right-[-10rem] max-h-44 rotate-[-30deg] hover:rotate-[-35deg] hover:scale-140 transition duration-300"
+            className="absolute bottom-[-10rem] right-[-10rem] max-h-44 rotate-[-30deg] hover:rotate-[-35deg] hover:scale-110 transition duration-300"
             alt="arrow"
           />
           <img
             src="blob.svg"
-            className="absolute top-[-4rem] left-[-20rem] max-h-72 rotate-[60deg] hover:scale-105 hover:scale-140 transition duration-300"
+            className="absolute top-[-4rem] left-[-20rem] max-h-72 rotate-[60deg] hover:scale-110 transition duration-300"
             alt="blob"
           />
           <img
             src="user.svg"
-            className="absolute top-[-10rem] right-[-18rem] max-h-64 hover:opacity-80 hover:scale-140 transition duration-300"
+            className="absolute top-[-10rem] right-[-18rem] max-h-64 hover:scale-110 transition duration-300"
             alt="user"
           />
         </div>
