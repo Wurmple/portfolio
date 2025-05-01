@@ -1,10 +1,4 @@
-<!--?xml version="1.0" standalone="no"?-->
-<svg id="sw-js-blob-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1">
-    <defs> 
-        <linearGradient id="sw-gradient" x1="0" x2="1" y1="1" y2="0">
-            <stop id="stop1" stop-color="rgba(215.227, 25.593, 25.593, 1)" offset="0%"></stop>
-            <stop id="stop2" stop-color="rgba(200.485, 203.843, 20.787, 0.9)" offset="100%"></stop>
-        </linearGradient>
-    </defs>
-<path fill="url(#sw-gradient)" d="M15,-25.7C18.6,-21,20.1,-15.4,23.4,-10.1C26.7,-4.8,31.9,0.3,34.5,7.3C37.1,14.3,37.1,23.2,31.3,23.9C25.6,24.5,14.2,17,7.4,13.6C0.7,10.2,-1.4,11.1,-5.7,12.9C-10.1,14.7,-16.7,17.4,-22.5,16.3C-28.3,15.3,-33.4,10.4,-34.6,4.7C-35.9,-1,-33.3,-7.5,-31.2,-15.1C-29.1,-22.6,-27.3,-31.2,-22.2,-35.2C-17,-39.2,-8.5,-38.6,-1.4,-36.4C5.7,-34.2,11.4,-30.4,15,-25.7Z" width="100%" height="100%" transform="translate(50 50)" stroke-width="0" style="transition: 0.3s;" stroke="url(#sw-gradient)"></path>
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M181.756 122.762C189.559 104.29 221.343 99.6232 251.929 108.031C333.869 130.556 394.837 244.216 311.484 284.492C261.694 308.552 246.342 276.549 204.502 276.549C168.501 276.549 116.79 318.667 65.7931 276.549C42.8448 257.596 43.9669 230.275 65.7931 202.79C103.028 155.903 130.245 210.358 149.339 184.258C157.949 172.488 163.778 159.537 169.968 140.968" stroke="#000000" stroke-opacity="0.9" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
