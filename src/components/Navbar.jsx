@@ -5,7 +5,11 @@ const Navbar = () => {
 
     const handleSectionClick = (section) => {
         console.log("Selected section:", section);
-        // TODO scroll to selected section
+        if(section === "home") {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            return;
+        }
+        
         const sectionElement = document.getElementById(section);
         if(sectionElement) {
             sectionElement.scrollIntoView({behavior: 'smooth'});
