@@ -237,11 +237,11 @@ function ExperienceScene({ onSelect }) {
   );
 }
 
-export default function ExperiencesScene({ id }) {
+export default function ExperiencesScene({ id, className}) {
   const [selectedExp, setSelectedExp] = useState(null);
 
   return (
-    <div id={id} className='relative h-[91vh] w-screen border-b-4 border-black bg-teal-200'>
+    <div id={id} className={`relative h-[91vh] w-screen border-b-4 border-black bg-teal-200 ${className}`}>
       <Canvas
         camera={{ position: [0, 4, 15], fov: 45 }}
         className="h-screen w-screen"

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Skills = ({id}) => {
+const Skills = ({id, className}) => {
   const languagesAndFrameworks = ["Java", "Python", "JavaScript/TypeScript", "React.js", "Spring Boot", "Angular", "Node.js", "Express.js", "Django"];
   const languagesAndFrameworksImages = ["java.svg", "python.png", "react.svg", "angular.png", "spring-boot.svg", "nodejs.svg"];
   const technologies = ['Docker', 'MongoDB', 'MySQL', 'GCP', ' Apache Kafka', ' HDFS', ' Git', ' BigQuery', 'Nginx', 'Solr', 'Redis', 'Jenkins'];
@@ -9,7 +9,7 @@ const Skills = ({id}) => {
   const conceptsImages = ["oop.svg", "dbms.svg", "system-design.svg", "microservices.svg", "ci-cd.svg", "data-analysis.svg"];
 
   return (
-    <div id={id} className='grid grid-cols-2 grid-rows-3 w-screen'>
+    <div id={id} className={`grid grid-cols-2 grid-rows-3 w-screen ${className}`}>
       {/* Languages and Frameworks Images */}
       <div className="bg-pink-300 p-4 border-black border-r-2 border-b-2 flex justify-center items-center">
         <div className="grid grid-cols-3 gap-x-16 gap-y-12">

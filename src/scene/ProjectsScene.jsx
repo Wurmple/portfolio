@@ -205,11 +205,11 @@ function CardsRow({ cardsData, onCardClick }) {
   );
 }
 
-const ProjectsScene = ({ id }) => {
+const ProjectsScene = ({ id, className }) => {
   const [selectedProject, setSelectedProject] = useState(null);
 
   return (
-    <div id={id} className='relative h-[91vh] w-screen border-b-4 border-black bg-lime-200'>
+    <div id={id} className={`relative h-[91vh] w-screen border-b-4 border-black bg-lime-200 ${className}`}>
       <Canvas camera={{ position: [0, 0, 3], fov: 75 }} className="h-screen w-screen" gl={{ antialias: true }}>
         <ambientLight intensity={1} />
         <directionalLight position={[5, 5, 5]} intensity={1.5} />

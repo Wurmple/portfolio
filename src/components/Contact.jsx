@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Contact = ({ id }) => {
+const Contact = ({ id, className }) => {
   return (
-    <div id={id} className='border-black border-t-2 h-[90vh] w-screen bg-lime-200 flex flex-col justify-evenly px-16 py-8'>
+    <div id={id} className={`border-black border-t-2 h-[90vh] w-screen bg-lime-200 flex flex-col justify-evenly px-16 py-8 ${className}`}>
       <div className='self-end bg-white border-black border-t-2 border-l-2 border-r-8 border-b-8 pl-12 pr-28 py-4 rounded-lg'>
         <h1 className='text-2xl font-extrabold font-k2d'>GET IN TOUCH:</h1>
       </div>
