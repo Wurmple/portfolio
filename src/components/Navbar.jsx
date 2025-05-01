@@ -16,7 +16,7 @@ const Navbar = () => {
     }
 
     return (
-    <nav className="fixed top-0 border-b-8 border-black bg-white h-[9vh] w-screen z-[1000]">
+    <nav className="sticky top-0 border-b-8 border-black bg-white h-[9vh] w-screen z-[1000]">
         <ul className='flex justify-center items-center gap-40 h-full w-full'>
             {sections.map((section) => (
                 <li key={section} className='font-k2d font-extrabold text-2xl border-b-4 border-transparent hover:border-black hover:cursor-pointer' onClick={() => handleSectionClick(section)}>

@@ -43,10 +43,10 @@ function LaptopModel() {
   );
 }
 
-export default function LaptopScene() {
+export default function LaptopScene({className}) {
   return (
-    <div className='h-screen'>
-      <Canvas camera={{ position: [0, 4, 13], fov: 45 }} gl={{ antialias: true }}>
+    <div className={`h-5/6 w-full ${className}`}>
+      <Canvas camera={{ position: [0, 4, 15], fov: 45 }} gl={{ antialias: true }}>
         <ambientLight intensity={2} />
         <directionalLight position={[5, 5, 5]} intensity={1.5} />
         <Suspense fallback={null}>

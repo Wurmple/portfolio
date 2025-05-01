@@ -4,16 +4,21 @@ import ProjectsScene from './scene/ProjectsScene.jsx';
 import ExperiencesScene from './scene/ExperiencesScene.jsx';
 import Skills from './components/Skills.jsx';
 import Contact from './components/Contact.jsx';
+import { useEffect } from 'react';
 
 export default function App() {
+  useEffect(()=> {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }, []);
+
   return (
-    <div className="snap-y overflow-y-scroll h-screen">
+    <div className='snap-y'>
       <Navbar></Navbar>
       <Hero id="home" className="snap-start"></Hero>
-      <ExperiencesScene id="experience" className="snap-start"></ExperiencesScene>
-      <ProjectsScene id="projects" className="snap-start"></ProjectsScene>
-      <Skills id="skills" className="snap-start"></Skills>
-      <Contact id="contact" className="snap-start"></Contact>
+      <ExperiencesScene id="experience"></ExperiencesScene>
+      <ProjectsScene id="projects"></ProjectsScene>
+      <Skills id="skills"></Skills>
+      <Contact id="contact"></Contact>
     </div>
   );
 }
