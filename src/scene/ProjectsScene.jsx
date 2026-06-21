@@ -260,7 +260,7 @@ function Modal({ project, onClose }) {
         </ul>
         <div className="flex flex-wrap gap-1.5 mb-4">
           {project.tags.map((tag, i) => (
-            <span key={i} className="font-jetbrains text-xs border-2 border-black px-2 py-0.5" style={{ backgroundColor: project.color }}>{tag}</span>
+            <span key={i} className="font-jetbrains text-xs border-2 border-black px-2 py-0.5 text-white" style={{ backgroundColor: project.color }}>{tag}</span>
           ))}
         </div>
         <button
