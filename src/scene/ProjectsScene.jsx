@@ -214,27 +214,19 @@ function MobileCards({ onSelect }) {
           <div className="flex items-center gap-3 px-4 py-3" style={{ backgroundColor: p.color }}>
             <img src={p.imageUrl} alt={p.title} className="h-10 w-10 object-contain bg-white border-2 border-black p-1 shrink-0" />
             <div>
-              <p className="font-k2d font-extrabold text-base leading-tight">{p.title}</p>
-              <p className="font-jetbrains text-xs opacity-80">{p.subtitle}</p>
+              <p className="font-k2d font-extrabold text-base leading-tight text-white">{p.title}</p>
+              <p className="font-jetbrains text-xs text-white opacity-80">{p.subtitle}</p>
             </div>
           </div>
-          <div className="px-4 py-3 bg-gray-50 border-t-2 border-black">
-            {p.highlights.slice(0, 2).map((h, j) => (
-              <p key={j} className="font-jetbrains text-xs flex gap-2 mb-1.5">
-                <span className="text-gray-400 shrink-0">→</span>
-                <span>{h}</span>
-              </p>
-            ))}
-            <div className="flex flex-wrap gap-1 mt-2">
-              {p.tags.slice(0, 4).map((tag, j) => (
-                <span key={j} className="font-jetbrains text-[10px] border border-black px-1.5 py-0.5 bg-white">{tag}</span>
-              ))}
-            </div>
+          <div className="px-4 py-3 bg-gray-50 border-t-2 border-black flex items-center justify-between gap-3">
+            <p className="font-jetbrains text-xs text-gray-500 leading-tight line-clamp-2 flex-1">
+              {p.highlights[0]}
+            </p>
             <button
               onClick={() => onSelect(p)}
-              className="mt-2 font-k2d font-bold text-xs border-2 border-black px-3 py-1 bg-black text-white"
+              className="shrink-0 font-k2d font-bold text-xs border-2 border-black px-3 py-1.5 bg-black text-white"
             >
-              View details →
+              Details →
             </button>
           </div>
         </div>
