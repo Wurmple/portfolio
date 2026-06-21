@@ -1,29 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=K2D:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=K2D:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
+  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
-html,body, #root {
-  height:100%;
-  margin:0;
-  padding:0;
-  width:100%
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 body {
   overflow-x: hidden;
 }
 
-.snap-y {
-  scroll-snap-type: y mandatory;
+/* Each full-page section snaps to the viewport top */
+.section-snap {
+  scroll-snap-align: start;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.snap-start {
+/* Sections with internal scrollable content (mobile cards) */
+.section-snap-scroll {
   scroll-snap-align: start;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Neo-brutalist box shadow utility */
+.shadow-brutal {
+  box-shadow: 4px 4px 0 0 #000;
+}
+.shadow-brutal-sm {
+  box-shadow: 3px 3px 0 0 #000;
+}
+.shadow-brutal-lg {
+  box-shadow: 6px 6px 0 0 #000;
+}
+
+/* Hover lift for neo-brutalist buttons */
+.btn-brutal {
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+.btn-brutal:hover {
+  box-shadow: none;
+  transform: translate(4px, 4px);
 }

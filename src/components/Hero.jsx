@@ -1,93 +1,111 @@
-import { useEffect, useState } from "react";
-import LaptopScene from "../scene/LaptopScene";
+import { Suspense, lazy } from 'react';
+import personal from '../data/personal';
 
-const Hero = ({ id, className }) => {
-  const fullGreeting = "Hey there, I'm Shyam 👋";
-  const fullOneLiner = "I build bold, functional, and unforgettable digital experiences.";
+const LaptopScene = lazy(() => import('../scene/LaptopScene'));
 
-  useEffect(() => {
-    let i = 0;
-    let j = 0;
-    const cursor = document.querySelectorAll(".cursor");
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
 
-    const blinkCursor = setInterval(() => {
-      cursor.forEach((c) => c.classList.toggle("opacity-0"));
-    }, 500);
-
-    const typeText = () => {
-      if (i < fullGreeting.length) {
-        document.getElementById("greeting").textContent = fullGreeting.slice(0, i + 1);
-        i++;
-        setTimeout(typeText, 100);
-      } else {
-        console.log("Greeting is fully typed!");
-        const typeOneLiner = () => {
-          if (j < fullOneLiner.length) {
-            document.getElementById("oneLiner").textContent = fullOneLiner.slice(0, j + 1);
-            j++;
-            setTimeout(typeOneLiner, 50);
-          } else {
-            clearInterval(blinkCursor);
-            cursor.forEach((c) => c.classList.add("hidden"));
-          }
-        };
-        typeOneLiner();
-      }
-    };
-
-    setTimeout(typeText, 1000);
-
-    return () => clearInterval(blinkCursor);
-  }, []);
-
+export default function Hero({ id }) {
   return (
-    <div id={id} className={`flex flex-col lg:flex-row h-[91vh] border-black border-b-4 w-screen ${className}`}>
-      <div className="border-r-2 border-black w-full lg:w-1/2 bg-lime-200 flex flex-col justify-between items-start font-jetbrains gap-24 px-10 pt-20 pb-0">
-        <div className="flex flex-col gap-12">
-          <div className="relative">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-start invisible">{fullGreeting}</h1>
-            <h1 className="absolute top-0 left-0 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-start">
-              <span id="greeting"></span>
-              <span className="cursor">|</span>
-            </h1>
-          </div>
-          <div className="relative text-right">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl text-gray-800 invisible">{fullOneLiner}</h2>
-            <h2 className="absolute top-0 right-0 text-xl sm:text-2xl lg:text-3xl text-gray-800">
-              <span id="oneLiner"></span>
-              <span className="cursor">|</span>
-            </h2>
-          </div>
-        </div>
-        <LaptopScene />
-      </div>
-      <div className="border-l-2 border-black w-full lg:w-1/2 bg-pink-300 flex items-center justify-center">
-        <div className="relative border-t-4 border-r-4 border-l-8 border-b-8 border-black px-4 py-8 max-w-full max-h-full flex flex-col gap-4 bg-teal-200 rounded-lg">
+    <section
+      id={id}
+      className="section-snap flex flex-col lg:flex-row w-screen border-b-4 border-black pt-16"
+    >
+      {/* ── Left panel ─────────────────────────────────────────── */}
+      <div className="flex flex-col justify-between bg-lime-200 w-full lg:w-[55%] border-r-0 lg:border-r-4 border-black px-8 sm:px-14 py-8 sm:py-12 h-full">
+
+        {/* Top: avatar + location */}
+        <div className="flex items-center gap-4 flex-wrap">
           <img
             src="shyam.jpg"
-            className="border-2 border-black object-contain w-full max-h-96 hover:shadow-lg hover:scale-105 transition duration-300"
             alt="Shyam Poduval"
+            className="h-14 w-14 rounded-full object-cover border-4 border-black shrink-0"
           />
-          <p className="font-jetbrains shadow-lg bg-pink-300 self-end px-1 py-2 hover:scale-110 transition duration-300">Shyam Poduval</p>
-          <img
-            src="curved-arrow.svg"
-            className="absolute bottom-[-5rem] right-[-5rem] max-h-24 lg:bottom-[-10rem] lg:right-[-10rem] lg:max-h-44 rotate-[-30deg] hover:rotate-[-35deg] hover:scale-110 transition duration-300"
-            alt="arrow"
-          />
-          <img
-            src="blob.svg"
-            className="absolute top-[-2rem] left-[-10rem] max-h-36 lg:top-[-4rem] lg:left-[-20rem] lg:max-h-72 rotate-[60deg] hover:scale-110 transition duration-300"
-            alt="blob"
-          />
-          <img
-            src="user.svg"
-            className="absolute top-[-5rem] right-[-9rem] max-h-32 lg:top-[-10rem] lg:right-[-18rem] lg:max-h-64 hover:scale-110 transition duration-300"
-            alt="user"
-          />
+          <span className="font-jetbrains text-xs sm:text-sm border-2 border-black bg-white px-3 py-1.5 shadow-brutal-sm">
+            📍 {personal.location}
+          </span>
+          <span className="font-jetbrains text-xs sm:text-sm border-2 border-black bg-lime-300 px-3 py-1.5 shadow-brutal-sm flex items-center gap-1.5">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse inline-block" />
+            Available for opportunities
+          </span>
+        </div>
+
+        {/* Middle: name + role + bio */}
+        <div className="flex flex-col gap-4 my-6 sm:my-0">
+          <h1 className="font-k2d font-extrabold uppercase leading-[0.9] text-[clamp(3.5rem,9vw,6rem)] tracking-tight">
+            {personal.firstName}
+            <br />
+            <span className="relative inline-block">
+              {personal.lastName}
+              <span className="absolute -bottom-2 left-0 right-0 h-[6px] bg-black" />
+            </span>
+          </h1>
+
+          <div className="flex items-center gap-3 mt-4">
+            <div className="bg-black text-lime-200 font-jetbrains text-sm sm:text-base px-4 py-2 font-bold shrink-0">
+              {personal.headline}
+            </div>
+          </div>
+
+          <p className="font-jetbrains text-sm sm:text-base text-gray-800 border-l-4 border-black pl-4 max-w-sm sm:max-w-md leading-relaxed">
+            {personal.bio}
+          </p>
+        </div>
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => scrollTo('experience')}
+            className="bg-black text-white font-k2d font-extrabold text-base sm:text-lg px-6 py-3 border-4 border-black shadow-brutal btn-brutal"
+          >
+            VIEW MY WORK ↓
+          </button>
+          <a
+            href={personal.resumePath}
+            download="Shyam_Poduval_Resume.pdf"
+            className="bg-white text-black font-k2d font-extrabold text-base sm:text-lg px-6 py-3 border-4 border-black shadow-brutal btn-brutal text-center"
+          >
+            DOWNLOAD RESUME ↗
+          </a>
+        </div>
+
+        {/* Social links */}
+        <div className="flex gap-3 flex-wrap mt-4 lg:mt-0">
+          <a
+            href={personal.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-jetbrains text-sm font-bold border-4 border-black bg-white px-4 py-2 shadow-brutal-sm btn-brutal"
+          >
+            GitHub
+          </a>
+          <a
+            href={personal.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-jetbrains text-sm font-bold border-4 border-black bg-white px-4 py-2 shadow-brutal-sm btn-brutal"
+          >
+            LinkedIn
+          </a>
+          <a
+            href={`mailto:${personal.email}`}
+            className="font-jetbrains text-sm font-bold border-4 border-black bg-white px-4 py-2 shadow-brutal-sm btn-brutal"
+          >
+            Email
+          </a>
         </div>
       </div>
-    </div>
-  );
-};
 
-export default Hero;
+      {/* ── Right panel: 3D laptop ──────────────────────────────── */}
+      <div className="hidden lg:flex items-center justify-center bg-black w-[45%] h-full border-t-0 border-black">
+        <Suspense fallback={
+          <div className="text-white font-jetbrains text-sm animate-pulse">Loading 3D...</div>
+        }>
+          <LaptopScene />
+        </Suspense>
+      </div>
+    </section>
+  );
+}

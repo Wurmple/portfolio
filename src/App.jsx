@@ -1,24 +1,21 @@
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
-import ProjectsScene from './scene/ProjectsScene.jsx';
 import ExperiencesScene from './scene/ExperiencesScene.jsx';
+import ProjectsScene from './scene/ProjectsScene.jsx';
 import Skills from './components/Skills.jsx';
+import Education from './components/Education.jsx';
 import Contact from './components/Contact.jsx';
-import { useEffect } from 'react';
 
 export default function App() {
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
-
   return (
-    <div className="snap-y">
+    <>
       <Navbar />
-      <Hero id="home" className="snap-start" />
+      <Hero id="home" />
       <ExperiencesScene id="experience" />
       <ProjectsScene id="projects" />
       <Skills id="skills" />
+      <Education id="education" />
       <Contact id="contact" />
-    </div>
+    </>
   );
 }

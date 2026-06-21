@@ -1,22 +1,22 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, OrbitControls } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import { Suspense } from 'react';
+
+const baseUrl = import.meta.env.BASE_URL || '/';
 
 function LaptopModel() {
   const [hovered, setHovered] = useState(false);
   const [isFacingUser, setIsFacingUser] = useState(false);
   const sceneRef = useRef();
-  const { scene } = useGLTF('laptop.glb');
+  const { scene } = useGLTF(`${baseUrl}laptop.glb`);
 
   useFrame(() => {
-    if (sceneRef.current) {
-      if (isFacingUser) {
-        sceneRef.current.rotation.y = 0;
-      } else {
-        const time = Date.now() * 0.001;
-        sceneRef.current.rotation.y = Math.sin(time) * (Math.PI / 4);
-      }
+    if (!sceneRef.current) return;
+    if (isFacingUser) {
+      sceneRef.current.rotation.y = 0;
+    } else {
+      sceneRef.current.rotation.y = Math.sin(Date.now() * 0.001) * (Math.PI / 4);
     }
   });
 
@@ -25,14 +25,11 @@ function LaptopModel() {
     setTimeout(() => setIsFacingUser(false), 3000);
   };
 
-  const handlePointerOver = () => setHovered(true);
-  const handlePointerOut = () => setHovered(false);
-
   return (
     <group
       onClick={handleClick}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
     >
       <primitive
         object={scene}
@@ -43,9 +40,9 @@ function LaptopModel() {
   );
 }
 
-export default function LaptopScene({ className }) {
+export default function LaptopScene() {
   return (
-    <div className={`h-5/6 w-full ${className}`}>
+    <div className="h-full w-full">
       <Canvas camera={{ position: [0, 4, 15], fov: 45 }} gl={{ antialias: true }}>
         <ambientLight intensity={2} />
         <directionalLight position={[5, 5, 5]} intensity={1.5} />

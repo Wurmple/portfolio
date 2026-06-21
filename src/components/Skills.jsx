@@ -1,80 +1,65 @@
-import React from 'react';
+import { useState } from 'react';
+import skillsData from '../data/skills';
 
-const Skills = ({ id, className }) => {
-  const languagesAndFrameworks = ["Java", "Python", "JavaScript/TypeScript", "React.js", "Spring Boot", "Angular", "Node.js", "Express.js", "Django"];
-  const languagesAndFrameworksImages = ["java.svg", "python.png", "react.svg", "angular.png", "spring-boot.svg", "nodejs.svg"];
-  const technologies = ['Docker', 'MongoDB', 'MySQL', 'GCP', ' Apache Kafka', ' HDFS', ' Git', ' BigQuery', 'Nginx', 'Solr', 'Redis', 'Jenkins'];
-  const technologiesImages = ["docker.svg", "gcp.svg", "kafka.svg", "git.svg", "pubsub.svg", "nginx.svg"];
-  const concepts = ['OOP', 'DSA', 'DBMS', 'System Design', 'Microservices', 'ETL', 'REST APIs', 'CI/CD', 'Statistical Analysis'];
-  const conceptsImages = ["oop.svg", "dbms.svg", "system-design.svg", "microservices.svg", "ci-cd.svg", "data-analysis.svg"];
+const baseUrl = import.meta.env.BASE_URL || '/';
+
+export default function Skills({ id }) {
+  const [active, setActive] = useState(0);
+  const cat = skillsData[active];
 
   return (
-    <div id={id} className={`grid grid-cols-1 lg:grid-cols-2 w-screen ${className}`}>
-      <div className="bg-pink-300 p-4 border-black border-r-2 border-b-2 flex justify-center items-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 lg:gap-x-16 lg:gap-y-12">
-          {languagesAndFrameworksImages.map((image, index) => (
-            <div key={index} className="flex items-center justify-center">
-              <img
-                src={image}
-                alt={image.split('.')[0] || "technologia"}
-                className="max-w-full h-24 sm:h-36 object-contain border-4 border-black p-4 shadow-lg transform hover:scale-105 transition-transform"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="bg-teal-200 py-8 px-4 flex flex-col gap-5 font-jetbrains border-black border-l-2 border-b-2 tracking-wide">
-        <h1 className="text-3xl font-extrabold uppercase">Languages and Frameworks</h1>
-        <ul className="font-semibold flex flex-col gap-1">
-          {languagesAndFrameworks.map((laf, index) => (
-            <li key={index} className="bg-white border-2 border-black p-2 hover:bg-gray-200">✨ {laf}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="bg-teal-200 py-8 px-4 flex flex-col gap-5 font-jetbrains border-black border-r-2 border-t-2 border-b-2 tracking-wide">
-        <h1 className="text-3xl font-extrabold uppercase">Technologies</h1>
-        <ul className="font-semibold flex flex-col gap-1">
-          {technologies.map((tech, index) => (
-            <li key={index} className="bg-white border-2 border-black p-2 hover:bg-gray-200">✨ {tech}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="bg-pink-300 p-4 border-black border-l-2 border-t-2 border-b-2 flex justify-center items-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 lg:gap-x-16 lg:gap-y-12">
-          {technologiesImages.map((image, index) => (
-            <div key={index} className="flex items-center justify-center">
-              <img
-                src={image}
-                alt={image.split('.')[0] || "technologia"}
-                className="max-w-full h-24 sm:h-36 object-contain border-4 border-black p-4 shadow-lg transform hover:scale-105 transition-transform"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="bg-pink-300 p-4 border-black border-r-2 border-t-2 border-b-2 flex justify-center items-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8 lg:gap-x-16 lg:gap-y-12">
-          {conceptsImages.map((image, index) => (
-            <div key={index} className="flex items-center justify-center">
-              <img
-                src={image}
-                alt={image.split('.')[0] || "technologia"}
-                className="max-w-full h-24 sm:h-36 object-contain border-4 border-black p-4 shadow-lg transform hover:scale-105 transition-transform"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="bg-teal-200 py-8 px-4 flex flex-col gap-5 font-jetbrains border-black border-l-2 border-t-2 border-b-2">
-        <h1 className="text-3xl font-extrabold uppercase">Concepts</h1>
-        <ul className="font-semibold flex flex-col gap-1">
-          {concepts.map((concept, index) => (
-            <li key={index} className="bg-white border-2 border-black p-2 hover:bg-gray-200">✨ {concept}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-};
+    <section id={id} className="section-snap w-screen bg-pink-300 border-b-4 border-black flex flex-col pt-16">
 
-export default Skills;
+      {/* Tab strip */}
+      <div className="flex border-b-4 border-black shrink-0">
+        {skillsData.map((c, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className={`flex-1 py-3 sm:py-4 font-k2d font-extrabold text-xs sm:text-sm md:text-base uppercase tracking-wide border-r-4 border-black last:border-r-0 transition-colors ${
+              active === i
+                ? 'bg-black text-white'
+                : 'bg-white text-black hover:bg-gray-100'
+            }`}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Content area */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 min-h-0">
+
+        {/* Icon grid */}
+        <div className="bg-teal-200 border-r-0 md:border-r-4 border-black border-b-4 md:border-b-0 flex items-center justify-center p-6 sm:p-10">
+          <div className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            {cat.images.map((img, i) => (
+              <div key={i} className="flex items-center justify-center">
+                <img
+                  src={`${baseUrl}${img}`}
+                  alt={img.split('.')[0]}
+                  className="h-14 w-14 sm:h-20 sm:w-20 object-contain border-4 border-black p-2.5 sm:p-3 bg-white shadow-brutal hover:scale-105 transition-transform"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* List */}
+        <div className="bg-pink-300 p-6 sm:p-10 overflow-y-auto">
+          <ul className="flex flex-col gap-2">
+            {cat.items.map((item, i) => (
+              <li
+                key={i}
+                className="bg-white border-2 border-black px-4 py-2.5 font-jetbrains font-semibold text-sm sm:text-base shadow-brutal-sm hover:bg-gray-50 transition-colors flex items-center gap-3"
+              >
+                <span className="text-gray-400 font-bold">→</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
