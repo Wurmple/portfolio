@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { Suspense } from 'react';
@@ -14,9 +15,9 @@ function LaptopModel() {
   useFrame(() => {
     if (!sceneRef.current) return;
     if (isFacingUser) {
-      sceneRef.current.rotation.y = 0;
+      sceneRef.current.rotation.y = THREE.MathUtils.lerp(sceneRef.current.rotation.y, 0, 0.05);
     } else {
-      sceneRef.current.rotation.y = Math.sin(Date.now() * 0.001) * (Math.PI / 4);
+      sceneRef.current.rotation.y = Math.sin(Date.now() * 0.0007) * 0.18;
     }
   });
 

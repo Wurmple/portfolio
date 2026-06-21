@@ -19,9 +19,9 @@ export default function Hero({ id }) {
         {/* Top: avatar + location */}
         <div className="flex items-center gap-4 flex-wrap">
           <img
-            src="shyam.jpg"
+            src="shyam2.jpg"
             alt="Shyam Poduval"
-            className="h-14 w-14 rounded-full object-cover border-4 border-black shrink-0"
+            className="h-14 w-14 rounded-full object-cover object-top border-4 border-black shrink-0"
           />
           <span className="font-jetbrains text-xs sm:text-sm border-2 border-black bg-white px-3 py-1.5 shadow-brutal-sm">
             📍 {personal.location}
@@ -99,7 +99,14 @@ export default function Hero({ id }) {
       </div>
 
       {/* ── Right panel: 3D laptop ──────────────────────────────── */}
-      <div className="hidden lg:flex items-center justify-center bg-black w-[45%] h-full border-t-0 border-black">
+      <div
+        className="hidden lg:flex items-center justify-center w-[45%] h-full border-t-0 border-black"
+        style={{
+          background: '#000',
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '22px 22px',
+        }}
+      >
         <Suspense fallback={
           <div className="text-white font-jetbrains text-sm animate-pulse">Loading 3D...</div>
         }>

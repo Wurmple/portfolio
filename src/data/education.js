@@ -6,6 +6,7 @@ const education = [
     field: 'Electrical and Electronics Engineering',
     period: '2020 – 2024',
     grade: 'CGPA 7.89 / 10.0',
+    logoUrl: 'bits-logo.png',
     activities: [
       'Workshop Manager — Quark Controls',
       'Literary and Debating Club',

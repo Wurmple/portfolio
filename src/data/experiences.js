@@ -32,7 +32,7 @@ const experiences = [
     period: 'Sep 2025 – Feb 2026',
     location: 'Bengaluru, Karnataka',
     color: '#42A5F5',
-    imageUrl: 'ird-software.svg',
+    imageUrl: 'ird_logo.jfif',
     highlights: [
       'Engineered banking platform backend in Core Java and PostgreSQL managing millions of daily transactions',
       'Developed Standing Order APIs for recurring payments and SWIFT settlement for Nostro accounts',
@@ -44,8 +44,8 @@ const experiences = [
     role: 'Associate Software Engineer',
     period: 'Mar 2026 – Present',
     location: 'Bengaluru, Karnataka',
-    color: '#7E57C2',
-    imageUrl: 'kobie.svg',
+    color: '#F57C00',
+    imageUrl: 'kobie_logo.jfif',
     highlights: [
       'Architected tier group coexistence feature on the KALC loyalty platform with Oracle DB',
       'Built Java/Quarkus/Spring Boot microservices with Kafka and RabbitMQ event publishing',

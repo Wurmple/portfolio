@@ -1,10 +1,20 @@
 import educationData from '../data/education';
 
+const baseUrl = import.meta.env.BASE_URL || '/';
+
 function EducationCard({ edu, accent }) {
   return (
-    <div
-      className={`border-4 border-black shadow-brutal flex flex-col gap-3 p-5 sm:p-7 ${accent}`}
-    >
+    <div className={`border-4 border-black shadow-brutal flex flex-col gap-3 p-5 sm:p-7 ${accent}`}>
+
+      {/* Logo (if available) */}
+      {edu.logoUrl && (
+        <img
+          src={`${baseUrl}${edu.logoUrl}`}
+          alt={edu.shortName}
+          className="h-12 object-contain self-start"
+        />
+      )}
+
       {/* Period badge */}
       <span className="font-jetbrains text-xs font-bold border-2 border-black bg-white px-2 py-1 self-start shadow-brutal-sm">
         {edu.period}

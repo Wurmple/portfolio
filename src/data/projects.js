@@ -6,6 +6,7 @@ const projects = [
   {
     title: 'PulseConnect',
     subtitle: 'Real-Time Communication Web App',
+    color: '#C62828',
     period: 'Dec 2024 – Jan 2025',
     imageUrl: pulse,
     highlights: [
@@ -19,6 +20,7 @@ const projects = [
   {
     title: 'WattWise',
     subtitle: 'Energy Management System',
+    color: '#1565C0',
     period: 'Feb 2024 – May 2024',
     imageUrl: flash,
     highlights: [
@@ -31,6 +33,7 @@ const projects = [
   {
     title: 'T20 World Cup Analysis',
     subtitle: 'Cricket Data Analytics',
+    color: '#7B1F1F',
     period: 'Nov 2023 – Dec 2023',
     imageUrl: ball,
     highlights: [

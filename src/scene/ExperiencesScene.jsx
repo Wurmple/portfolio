@@ -7,29 +7,129 @@ import experiencesData from '../data/experiences';
 const baseUrl = import.meta.env.BASE_URL || '/';
 const fontUrl = `${baseUrl}fonts/Impact.ttf`;
 
-function wrapText(ctx, text, maxWidth, y, fontSize, stroke = false) {
+// Load Impact.ttf via FontFace so canvas text matches Three.js Text
+let _fontReady = null;
+function ensureFont() {
+  if (_fontReady) return _fontReady;
+  try {
+    const ff = new FontFace('ImpactCanvas', `url(${fontUrl})`);
+    document.fonts.add(ff);
+    _fontReady = ff.load().catch(() => null);
+  } catch {
+    _fontReady = Promise.resolve(null);
+  }
+  return _fontReady;
+}
+const FONT = 'ImpactCanvas, Impact, Arial Black, sans-serif';
+
+// Remove near-white pixels from a JPEG logo so it sits cleanly on any background
+function removeWhiteBg(img, size = 512) {
+  const tmp = document.createElement('canvas');
+  tmp.width = size;
+  tmp.height = size;
+  const c = tmp.getContext('2d');
+  c.drawImage(img, 0, 0, size, size);
+  const id = c.getImageData(0, 0, size, size);
+  const d = id.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i] > 235 && d[i + 1] > 235 && d[i + 2] > 235) d[i + 3] = 0;
+  }
+  c.putImageData(id, 0, 0);
+  return tmp;
+}
+
+function wrapLines(ctx, text, maxW) {
   const words = text.split(' ');
-  let line = '';
   const lines = [];
+  let line = '';
   for (const word of words) {
-    const testLine = line + word + ' ';
-    if (ctx.measureText(testLine).width > maxWidth && line) {
-      lines.push(line.trim());
-      line = word + ' ';
+    const test = line ? line + ' ' + word : word;
+    if (ctx.measureText(test).width > maxW && line) {
+      lines.push(line);
+      line = word;
     } else {
-      line = testLine;
+      line = test;
     }
   }
-  lines.push(line.trim());
-  lines.forEach((l, i) => {
-    const textY = y + i * 1.2 * fontSize;
-    if (stroke) {
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = 3;
-      ctx.strokeText(l, ctx.canvas.width / 2, textY);
-    }
-    ctx.fillText(l, ctx.canvas.width / 2, textY);
-  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+// Draws the cube face onto a 1024×1024 canvas — white card with colour accent
+function buildCubeTexture(exp, logoSource) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+
+  // White base
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, 1024, 1024);
+
+  // Coloured top accent strip
+  ctx.fillStyle = exp.color;
+  ctx.fillRect(0, 0, 1024, 170);
+
+  // Logo — centred in the white area between strip and divider (y 185–450)
+  if (logoSource) {
+    const maxW = 660, maxH = 240;
+    const srcW = logoSource.width || 512;
+    const srcH = logoSource.height || 512;
+    const ratio = srcW / srcH;
+    const lw = ratio > maxW / maxH ? maxW : maxH * ratio;
+    const lh = ratio > maxW / maxH ? maxW / ratio : maxH;
+    const lx = (1024 - lw) / 2;
+    const ly = 185 + (240 - lh) / 2;
+    ctx.drawImage(logoSource, lx, ly, lw, lh);
+  }
+
+  // Horizontal divider
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.moveTo(36, 472);
+  ctx.lineTo(988, 472);
+  ctx.stroke();
+
+  // Company name — large black Impact
+  ctx.fillStyle = '#000';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.font = `bold 96px ${FONT}`;
+  const nameLines = wrapLines(ctx, exp.company.toUpperCase(), 930);
+  nameLines.forEach((l, i) => ctx.fillText(l, 512, 492 + i * 110));
+
+  // Role — coloured label strip
+  const roleY = 492 + nameLines.length * 110 + 14;
+  const roleH = 96;
+  ctx.fillStyle = exp.color;
+  ctx.fillRect(46, roleY, 932, roleH);
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 8;
+  ctx.strokeRect(46, roleY, 932, roleH);
+  ctx.fillStyle = '#000';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 52px Arial, Helvetica, sans-serif';
+  ctx.fillText(exp.role, 512, roleY + roleH / 2);
+
+  // Period
+  const periodY = roleY + roleH + 24;
+  ctx.fillStyle = '#111';
+  ctx.textBaseline = 'top';
+  ctx.font = 'bold 46px Arial, Helvetica, sans-serif';
+  ctx.fillText(exp.period, 512, periodY);
+
+  // Location
+  ctx.fillStyle = '#333';
+  ctx.font = '40px Arial, Helvetica, sans-serif';
+  ctx.fillText(exp.location, 512, periodY + 66);
+
+  // Heavy outer border
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 24;
+  ctx.strokeRect(12, 12, 1000, 1000);
+
+  return canvas;
 }
 
 function ExperienceCube({ position, exp, onClick }) {
@@ -37,84 +137,40 @@ function ExperienceCube({ position, exp, onClick }) {
   const [isHovered, setIsHovered] = useState(false);
   const initialY = useRef(position[1]);
   const baseColor = useMemo(() => new THREE.Color(exp.color), [exp.color]);
-  const frontColor = useMemo(() => new THREE.Color(exp.color).multiplyScalar(1.25), [exp.color]);
   const [texture, setTexture] = useState(null);
+  const isJpeg = /\.(jfif|jpg|jpeg)$/i.test(exp.imageUrl);
 
   useEffect(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 1024;
-    const ctx = canvas.getContext('2d');
+    let mounted = true;
 
-    ctx.fillStyle = frontColor.getStyle();
-    ctx.fillRect(0, 0, 1024, 1024);
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 20;
-    ctx.strokeRect(0, 0, 1024, 1024);
-
-    const img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => {
-      const cx = 512, cy = 290, maxS = 480;
-      const r = img.width / img.height;
-      const dw = r > 1 ? maxS : maxS * r;
-      const dh = r > 1 ? maxS / r : maxS;
-      const px = cx - dw / 2, py = cy - dh / 2;
-      const pad = 18;
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(px - pad, py - pad, dw + pad * 2, dh + pad * 2);
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 10;
-      ctx.strokeRect(px - pad, py - pad, dw + pad * 2, dh + pad * 2);
-      ctx.drawImage(img, px, py, dw, dh);
-      drawLabels();
-    };
-    img.onerror = () => drawLabels();
-    img.src = `${baseUrl}${exp.imageUrl}`;
-
-    function drawLabels() {
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      let y = 540;
-
-      ctx.fillStyle = '#000';
-      ctx.font = 'bold 90px Oswald, Impact, sans-serif';
-      wrapText(ctx, exp.company, 900, y, 90, true);
-      y += 90 * 1.2 + 36;
-
-      ctx.font = 'bold 68px Oswald, Impact, sans-serif';
-      wrapText(ctx, exp.role, 900, y, 68, true);
-      y += 68 * 1.2 + 24;
-
-      ctx.font = 'bold 50px Oswald, Impact, sans-serif';
-      wrapText(ctx, exp.period, 900, y, 50);
-      y += 50 * 1.2 + 18;
-
-      ctx.font = 'italic bold 42px Oswald, Impact, sans-serif';
-      wrapText(ctx, exp.location, 900, y, 42);
-
-      const tex = new THREE.CanvasTexture(canvas);
+    Promise.all([
+      ensureFont(),
+      new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(isJpeg ? removeWhiteBg(img) : img);
+        img.onerror = () => resolve(null);
+        img.src = `${baseUrl}${exp.imageUrl}`;
+      }),
+    ]).then(([, logo]) => {
+      if (!mounted) return;
+      const faceCanvas = buildCubeTexture(exp, logo);
+      const tex = new THREE.CanvasTexture(faceCanvas);
       tex.needsUpdate = true;
       setTexture(tex);
-    }
+    });
 
-    return () => {
-      if (texture) texture.dispose();
-    };
-  }, [exp, frontColor]);
+    return () => { mounted = false; };
+  }, [exp]);
 
   useFrame(() => {
     if (!meshRef.current) return;
     meshRef.current.position.y = THREE.MathUtils.lerp(
       meshRef.current.position.y,
-      isHovered ? initialY.current + 0.35 : initialY.current,
+      isHovered ? initialY.current + 0.4 : initialY.current,
       0.1
     );
     meshRef.current.rotation.x = 0;
     meshRef.current.rotation.y = 0;
-    const front = meshRef.current.material[4];
-    front.emissive.set(isHovered ? '#ffffff' : '#000000');
-    front.emissiveIntensity = isHovered ? 0.12 : 0;
   });
 
   const materials = useMemo(() => [
@@ -122,21 +178,22 @@ function ExperienceCube({ position, exp, onClick }) {
     new THREE.MeshStandardMaterial({ color: baseColor }),
     new THREE.MeshStandardMaterial({ color: baseColor }),
     new THREE.MeshStandardMaterial({ color: baseColor }),
-    new THREE.MeshStandardMaterial({ color: frontColor, map: texture, emissive: '#000', emissiveIntensity: 0 }),
+    // MeshBasicMaterial ignores lighting — the canvas texture always displays at full brightness
+    new THREE.MeshBasicMaterial({ map: texture }),
     new THREE.MeshStandardMaterial({ color: baseColor }),
-  ], [baseColor, frontColor, texture]);
+  ], [baseColor, texture]);
 
   return (
     <group position={position}>
       <mesh
         ref={meshRef}
-        scale={isHovered ? [1.1, 1.1, 1.1] : [1, 1, 1]}
+        scale={isHovered ? [1.07, 1.07, 1.07] : [1, 1, 1]}
         material={materials}
         onPointerOver={() => setIsHovered(true)}
         onPointerOut={() => setIsHovered(false)}
         onClick={() => onClick(exp)}
       >
-        <boxGeometry args={[3, 3, 3]} />
+        <boxGeometry args={[3.8, 3.8, 3.8]} />
       </mesh>
     </group>
   );
@@ -144,7 +201,7 @@ function ExperienceCube({ position, exp, onClick }) {
 
 function Scene({ onSelect }) {
   const { width } = useThree((s) => s.size);
-  const spacing = width < 768 ? 3.5 : 5;
+  const spacing = width < 768 ? 3.8 : 4.8;
   const total = experiencesData.length;
   const startX = -((total - 1) * spacing) / 2;
 
@@ -158,13 +215,13 @@ function Scene({ onSelect }) {
           onClick={onSelect}
         />
       ))}
-      <Text position={[0, 4.2, 0]} font={fontUrl} fontSize={0.85} color="#000" anchorX="center" anchorY="middle">
+      <Text position={[0, 5.6, 0]} font={fontUrl} fontSize={1.1} color="#000" anchorX="center" anchorY="middle">
         Work Experience
       </Text>
-      <Text position={[startX - 2.5, 0, 0]} font={fontUrl} fontSize={0.45} color="#555" anchorX="right" anchorY="middle">
+      <Text position={[startX - 1.4, 0, 0]} font={fontUrl} fontSize={0.55} color="#111" anchorX="right" anchorY="middle">
         Earlier
       </Text>
-      <Text position={[startX + (total - 1) * spacing + 2.5, 0, 0]} font={fontUrl} fontSize={0.45} color="#555" anchorX="left" anchorY="middle">
+      <Text position={[startX + (total - 1) * spacing + 1.4, 0, 0]} font={fontUrl} fontSize={0.55} color="#111" anchorX="left" anchorY="middle">
         Recent
       </Text>
     </group>
@@ -172,7 +229,7 @@ function Scene({ onSelect }) {
 }
 
 /* ── Mobile accordion cards ─────────────────────────────────── */
-function MobileCards({ onSelect }) {
+function MobileCards() {
   const [open, setOpen] = useState(null);
 
   return (
@@ -184,6 +241,7 @@ function MobileCards({ onSelect }) {
         <div
           key={exp.company}
           className="border-4 border-black bg-white shadow-brutal"
+          style={{ borderLeftColor: exp.color, borderLeftWidth: 8 }}
         >
           <button
             onClick={() => setOpen(open === i ? null : i)}
@@ -193,14 +251,14 @@ function MobileCards({ onSelect }) {
               <img
                 src={`${baseUrl}${exp.imageUrl}`}
                 alt={exp.company}
-                className="h-8 w-16 object-contain border-2 border-black p-1 bg-white"
+                className="h-9 w-16 object-contain border-2 border-black p-1 bg-white shrink-0"
               />
               <div>
                 <p className="font-k2d font-extrabold text-base leading-tight">{exp.company}</p>
                 <p className="font-jetbrains text-xs text-gray-600">{exp.role} · {exp.period}</p>
               </div>
             </div>
-            <span className="font-jetbrains font-bold text-lg">{open === i ? '−' : '+'}</span>
+            <span className="font-jetbrains font-bold text-lg shrink-0">{open === i ? '−' : '+'}</span>
           </button>
           {open === i && (
             <ul className="border-t-2 border-black px-4 py-3 flex flex-col gap-1.5 bg-gray-50">
@@ -229,10 +287,14 @@ function Modal({ exp, onClose }) {
         className="bg-white border-4 border-black shadow-[8px_8px_0_0_#000] p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
+        <div
+          className="h-2 w-full mb-4 border-b-4 border-black"
+          style={{ backgroundColor: exp.color }}
+        />
         <img
           src={`${baseUrl}${exp.imageUrl}`}
           alt={exp.company}
-          className="h-16 object-contain mb-4 border-2 border-black p-2"
+          className="h-14 object-contain mb-4 border-2 border-black p-2 bg-white"
         />
         <h2 className="font-k2d font-extrabold text-2xl sm:text-3xl mb-1">{exp.company}</h2>
         <h3 className="font-jetbrains font-semibold text-lg mb-1">{exp.role}</h3>
@@ -265,19 +327,20 @@ export default function ExperiencesScene({ id }) {
       {/* Desktop 3D */}
       <div className="hidden md:block h-full">
         <Canvas
-          camera={{ position: [0, 2, 18], fov: 50 }}
+          camera={{ position: [0, 1, 13], fov: 56 }}
           className="w-full h-full"
           gl={{ antialias: true, powerPreference: 'high-performance' }}
         >
-          <ambientLight intensity={1} />
-          <directionalLight position={[5, 5, 5]} intensity={4} />
+          <ambientLight intensity={1.8} />
+          <directionalLight position={[5, 8, 5]} intensity={3} />
+          <directionalLight position={[-5, 3, 5]} intensity={1.5} />
           <Scene onSelect={setSelected} />
         </Canvas>
       </div>
 
       {/* Mobile HTML cards */}
       <div className="md:hidden h-full">
-        <MobileCards onSelect={setSelected} />
+        <MobileCards />
       </div>
 
       {selected && <Modal exp={selected} onClose={() => setSelected(null)} />}
